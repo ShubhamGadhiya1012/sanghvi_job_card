@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+import 'package:sanghvi_job_card/constants/color_constants.dart';
+import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
+import 'package:lottie/lottie.dart';
+
+class AppLoadingOverlay extends StatelessWidget {
+  final bool isLoading;
+
+  const AppLoadingOverlay({super.key, required this.isLoading});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isLoading) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: kColorBlackWithOpacity,
+      child: const Center(child: AppProgressIndicator()),
+    );
+  }
+}
+
+class AppProgressIndicator extends StatelessWidget {
+  const AppProgressIndicator({super.key, this.size});
+
+  final double? size;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool tablet = AppScreenUtils.isTablet(context);
+    return SizedBox(
+      width: size ?? (tablet ? 125 : 75),
+      height: size ?? (tablet ? 125 : 75),
+      child: Center(
+        child: Lottie.asset(
+          'assets/sanghvi_job_card_lottie.json',
+          width: size,
+          height: size,
+          fit: BoxFit.fill,
+        ),
+      ),
+    );
+  }
+}
