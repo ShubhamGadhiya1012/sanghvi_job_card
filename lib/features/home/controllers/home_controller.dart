@@ -3,9 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sanghvi_job_card/features/auth/screens/login_screen.dart';
+import 'package:sanghvi_job_card/features/brand_master/screens/item_master_entry_screen.dart';
 import 'package:sanghvi_job_card/features/home/models/home_menu_item_dm.dart';
 import 'package:sanghvi_job_card/features/home/repos/home_repo.dart';
 import 'package:sanghvi_job_card/features/home/screens/home_screen.dart';
+import 'package:sanghvi_job_card/features/party_master/screens/party_master_entry_screen.dart';
 import 'package:sanghvi_job_card/features/user_settings/models/user_access_dm.dart';
 import 'package:sanghvi_job_card/features/user_settings/repos/user_access_repo.dart';
 import 'package:sanghvi_job_card/features/user_settings/screens/unauth_users_screen.dart';
@@ -184,21 +186,21 @@ class HomeController extends GetxController {
         menuName: 'Job Card',
         icon: Icons.assignment_outlined,
         onTap: () {
-          Get.to(() => ());
+          Get.to(() => HomeScreen());
         },
       ),
       HomeMenuItemDm(
         menuName: 'Vendor Master',
         icon: Icons.account_circle_outlined,
         onTap: () {
-          Get.to(() => HomeScreen());
+          Get.to(() => PartyMasterEntryScreen());
         },
       ),
       HomeMenuItemDm(
         menuName: 'Brand Master',
         icon: Icons.branding_watermark_outlined,
         onTap: () {
-          Get.to(() => ());
+          Get.to(() => ItemMasterEntryScreen());
         },
       ),
       HomeMenuItemDm(
