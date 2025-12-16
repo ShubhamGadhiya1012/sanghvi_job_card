@@ -32,11 +32,11 @@ class AppProgressIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool tablet = AppScreenUtils.isTablet(context);
     return SizedBox(
-      width: size ?? (tablet ? 125 : 75),
-      height: size ?? (tablet ? 125 : 75),
+      width: size ?? (tablet ? 155 : 125),
+      height: size ?? (tablet ? 155 : 125),
       child: Center(
         child: Lottie.asset(
-          'assets/sanghvi_job_card_lottie.json',
+          'assets/sanghavi_job_card.json',
           width: size,
           height: size,
           fit: BoxFit.fill,

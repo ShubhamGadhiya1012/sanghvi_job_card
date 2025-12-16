@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sanghvi_job_card/constants/color_constants.dart';
 import 'package:sanghvi_job_card/constants/image_constants.dart';
+import 'package:sanghvi_job_card/features/auth/screens/login_screen.dart';
+import 'package:sanghvi_job_card/features/home/screens/home_screen.dart';
 import 'package:sanghvi_job_card/styles/font_sizes.dart';
 import 'package:sanghvi_job_card/styles/text_styles.dart';
+import 'package:sanghvi_job_card/utils/helpers/secure_storage_helper.dart';
 import 'package:sanghvi_job_card/utils/helpers/version_helper.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
 
@@ -74,9 +78,14 @@ class _SplashScreenState extends State<SplashScreen>
     appVersion = await VersionHelper.getVersion();
     setState(() {});
     await Future.delayed(const Duration(seconds: 3));
+    String? token = await SecureStorageHelper.read('token');
 
     Future.delayed(const Duration(seconds: 1), () {
-      SizedBox.shrink();
+      if (token != null && token.isNotEmpty) {
+        Get.offAll(() => HomeScreen()); 
+      } else {
+        Get.offAll(() => LoginScreen());
+      }
     });
   }
 

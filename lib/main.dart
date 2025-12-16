@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:sanghvi_job_card/constants/color_constants.dart';
-import 'package:sanghvi_job_card/features/auth/splash_screen.dart';
+import 'package:sanghvi_job_card/features/auth/screens/splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

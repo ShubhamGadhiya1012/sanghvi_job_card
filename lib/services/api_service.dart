@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String kBaseUrl =
-      'http://sanghvi_job_cardapp.jineecs.in/api'; // LIve
+  //   static const String kBaseUrl =
+  //       'http://sanghvi_job_cardapp.jineecs.in/api'; // LIve
 
-  // static const String kBaseUrl =
-  //     'http://192.168.0.145:5003/api'; // Dhruvil bhai
+  static const String kBaseUrl =
+      'http://192.168.0.145:8080/api'; // Dhruvil bhai
 
   static Future<dynamic> getRequest({
     String? endpoint,

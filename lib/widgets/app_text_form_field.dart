@@ -48,8 +48,8 @@ class AppTextFormField extends StatelessWidget {
   final bool? isObscure;
   final List<TextInputFormatter>? inputFormatters;
   final void Function(String)? onFieldSubmitted;
-  final void Function(String)? onSubmitted; // ✅ Added new onSubmitted
-  final VoidCallback? onTap; // ✅ Added new onTap
+  final void Function(String)? onSubmitted;
+  final VoidCallback? onTap;
   final double? fontSize;
   final FontWeight? fontWeight;
 
@@ -69,7 +69,7 @@ class AppTextFormField extends StatelessWidget {
       validator: validator,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
-      onTap: onTap, // ✅ integrated onTap
+      onTap: onTap,
       textInputAction: textInputAction ?? TextInputAction.done,
       keyboardType: keyboardType ?? TextInputType.text,
       style: TextStyles.kRegularOutfit(
@@ -83,7 +83,8 @@ class AppTextFormField extends StatelessWidget {
         if (onSubmitted != null) {
           onSubmitted!(controller.text);
         }
-      }, // ✅ integrated onSubmitted
+        FocusScope.of(context).unfocus();
+      },
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyles.kRegularOutfit(
