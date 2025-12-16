@@ -91,6 +91,13 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
+          AppTextButtonWithIcon(
+            onPressed: () {
+              Get.to(() => JobCardScreen());
+            },
+            title: 'Add New',
+            icon: Icons.add,
+          ),
         ],
       ),
     );
@@ -442,17 +449,8 @@ class HomeScreen extends StatelessWidget {
                   onChanged: (value) => _controller.refreshJobCards(),
                 ),
               ),
-              tablet ? AppSpaces.h16 : AppSpaces.h10,
-              AppTextButtonWithIcon(
-                onPressed: () {
-                  Get.to(() => JobCardScreen());
-                },
-                title: 'Add New',
-                icon: Icons.add,
-              ),
             ],
           ),
-          tablet ? AppSpaces.v10 : AppSpaces.v6,
 
           Expanded(
             child: NotificationListener<ScrollNotification>(

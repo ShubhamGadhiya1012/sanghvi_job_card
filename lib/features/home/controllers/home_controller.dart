@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sanghvi_job_card/constants/color_constants.dart';
 import 'package:sanghvi_job_card/features/auth/screens/login_screen.dart';
 import 'package:sanghvi_job_card/features/brand_master/screens/item_master_entry_screen.dart';
 import 'package:sanghvi_job_card/features/home/models/home_menu_item_dm.dart';
@@ -12,10 +13,13 @@ import 'package:sanghvi_job_card/features/user_settings/models/user_access_dm.da
 import 'package:sanghvi_job_card/features/user_settings/repos/user_access_repo.dart';
 import 'package:sanghvi_job_card/features/user_settings/screens/unauth_users_screen.dart';
 import 'package:sanghvi_job_card/features/user_settings/screens/users_screen.dart';
+import 'package:sanghvi_job_card/styles/font_sizes.dart';
+import 'package:sanghvi_job_card/styles/text_styles.dart';
 import 'package:sanghvi_job_card/utils/dialogs/app_dialogs.dart';
 import 'package:sanghvi_job_card/utils/helpers/device_helper.dart';
 import 'package:sanghvi_job_card/utils/helpers/secure_storage_helper.dart';
 import 'package:sanghvi_job_card/utils/helpers/version_helper.dart';
+import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeController extends GetxController {
@@ -222,19 +226,58 @@ class HomeController extends GetxController {
           barrierDismissible: false,
         );
       } else if (e.toString().contains('Please login again.')) {
+        final tablet = AppScreenUtils.isTablet(Get.context!);
         Get.dialog(
           WillPopScope(
             onWillPop: () async => false,
             child: AlertDialog(
-              title: const Text('Session Expired'),
-              content: Text(e.toString()),
+              backgroundColor: kColorWhite,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(tablet ? 16 : 12),
+              ),
+              title: Text(
+                'Session Expired',
+                style: TextStyles.kSemiBoldOutfit(
+                  fontSize: tablet
+                      ? FontSizes.k20FontSize
+                      : FontSizes.k18FontSize,
+                  color: kColorTextPrimary,
+                ),
+              ),
+              content: Text(
+                'Your session has expired. Please login again to continue.',
+                style: TextStyles.kRegularOutfit(
+                  fontSize: tablet
+                      ? FontSizes.k16FontSize
+                      : FontSizes.k14FontSize,
+                  color: kColorTextPrimary,
+                ),
+              ),
               actions: [
-                TextButton(
+                ElevatedButton(
                   onPressed: () {
                     Get.back();
                     logoutUser();
                   },
-                  child: const Text('Login Again'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kColorPrimary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: tablet ? 24 : 20,
+                      vertical: tablet ? 12 : 10,
+                    ),
+                  ),
+                  child: Text(
+                    'Login Again',
+                    style: TextStyles.kMediumOutfit(
+                      fontSize: tablet
+                          ? FontSizes.k16FontSize
+                          : FontSizes.k14FontSize,
+                      color: kColorWhite,
+                    ),
+                  ),
                 ),
               ],
             ),
