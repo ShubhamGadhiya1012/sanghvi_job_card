@@ -8,9 +8,11 @@ import 'package:sanghvi_job_card/styles/font_sizes.dart';
 import 'package:sanghvi_job_card/styles/text_styles.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_paddings.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
+import 'package:sanghvi_job_card/utils/screen_utils/app_spacings.dart';
 import 'package:sanghvi_job_card/widgets/app_appbar.dart';
 import 'package:sanghvi_job_card/widgets/app_loading_overlay.dart';
 import 'package:sanghvi_job_card/widgets/app_text_button_with_icon.dart';
+import 'package:sanghvi_job_card/widgets/app_text_form_field.dart';
 
 class PartyMasterEntryScreen extends StatelessWidget {
   PartyMasterEntryScreen({super.key});
@@ -55,11 +57,17 @@ class PartyMasterEntryScreen extends StatelessWidget {
                 : AppPaddings.p10,
             child: Column(
               children: [
-                Obx(() {
-                  if (_controller.partyList.isEmpty &&
-                      !_controller.isLoading.value) {
-                    return Expanded(
-                      child: Center(
+                AppTextFormField(
+                  controller: _controller.searchController,
+                  hintText: 'Search Party',
+                  onChanged: (value) => _controller.refreshPartyList(),
+                ),
+                tablet ? AppSpaces.v10 : AppSpaces.v6,
+                Expanded(
+                  child: Obx(() {
+                    if (_controller.partyList.isEmpty &&
+                        !_controller.isLoading.value) {
+                      return Center(
                         child: Text(
                           'No parties found.',
                           style: TextStyles.kMediumOutfit(
@@ -69,25 +77,32 @@ class PartyMasterEntryScreen extends StatelessWidget {
                             color: kColorTextPrimary,
                           ),
                         ),
+                      );
+                    }
+
+                    return RefreshIndicator(
+                      backgroundColor: kColorWhite,
+                      color: kColorPrimary,
+                      strokeWidth: 2.5,
+                      onRefresh: () => _controller.refreshPartyList(),
+                      child: ListView.builder(
+                        itemCount: _controller.partyList.length,
+                        itemBuilder: (context, index) {
+                          final party = _controller.partyList[index];
+                          return PartyMasterCard(
+                            party: party,
+                            onEdit: () {
+                              Get.to(
+                                () => PartyMasterScreen(),
+                                arguments: party,
+                              );
+                            },
+                          );
+                        },
                       ),
                     );
-                  }
-
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: _controller.partyList.length,
-                      itemBuilder: (context, index) {
-                        final party = _controller.partyList[index];
-                        return PartyMasterCard(
-                          party: party,
-                          onEdit: () {
-                            Get.to(() => PartyMasterScreen(), arguments: party);
-                          },
-                        );
-                      },
-                    ),
-                  );
-                }),
+                  }),
+                ),
               ],
             ),
           ),

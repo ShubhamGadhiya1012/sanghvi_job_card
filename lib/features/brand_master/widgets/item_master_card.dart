@@ -101,7 +101,15 @@ class ItemMasterCard extends StatelessWidget {
                 ),
               ],
             ),
-            isTablet ? AppSpaces.v16 : AppSpaces.v12,
+            isTablet ? AppSpaces.v16 : AppSpaces.v10,
+            if (item.pName.isNotEmpty) ...[
+              _buildInfoRow(
+                label: 'Party Name',
+                value: item.pName,
+                isTablet: isTablet,
+              ),
+              isTablet ? AppSpaces.v12 : AppSpaces.v10,
+            ],
             Divider(height: 1, color: Colors.grey[300]),
             isTablet ? AppSpaces.v16 : AppSpaces.v12,
 

@@ -76,6 +76,22 @@ class ItemMasterController extends GetxController {
     innerBoxQtyController.text = item.innerBoxQty;
     masterBoxTypeController.text = item.masterBoxType;
 
+    if (partyList.isEmpty) {
+      await fetchDropdownData();
+    }
+
+    if (item.pCode.isNotEmpty && partyList.isNotEmpty) {
+      try {
+        final party = partyList.firstWhere(
+          (p) => p.pCode == item.pCode,
+          orElse: () => throw Exception('Party not found'),
+        );
+        selectedParty.value = party;
+      } catch (e) {
+        selectedParty.value = null;
+      }
+    }
+
     if (item.reelColour.isNotEmpty) {
       selectedReelColour.value = item.reelColour;
     }
@@ -129,17 +145,21 @@ class ItemMasterController extends GetxController {
   }
 
   Future<void> getPartyList() async {
+    isLoading.value = true;
     try {
       final data = await ItemMasterRepo.getPartyList();
       partyList.assignAll(data);
-      partyNames.assignAll(data.map((e) => '${e.pCode} - ${e.pName}'));
-    } catch (_) {}
+      partyNames.assignAll(data.map((e) => e.pName));
+    } catch (_) {
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  void onPartySelected(String? party) {
-    if (party != null && party.isNotEmpty) {
+  void onPartySelected(String? partyName) {
+    if (partyName != null && partyName.isNotEmpty) {
       final selected = partyList.firstWhere(
-        (p) => '${p.pCode} - ${p.pName}' == party,
+        (p) => p.pName == partyName,
         orElse: () => partyList.first,
       );
       selectedParty.value = selected;
@@ -147,11 +167,15 @@ class ItemMasterController extends GetxController {
   }
 
   Future<void> getColors() async {
+    isLoading.value = true;
     try {
       final data = await ItemMasterRepo.getColors();
       colorList.assignAll(data);
       colorNames.assignAll(data.map((e) => e.value));
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void onReelColourSelected(String? colour) {
@@ -179,11 +203,15 @@ class ItemMasterController extends GetxController {
   }
 
   Future<void> getReelTypes() async {
+    isLoading.value = true;
     try {
       final data = await ItemMasterRepo.getReelTypes();
       reelTypeList.assignAll(data);
       reelTypeNames.assignAll(data.map((e) => e.value));
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void onReelTypeSelected(String? type) {
@@ -191,11 +219,15 @@ class ItemMasterController extends GetxController {
   }
 
   Future<void> getInnerBoxLabels() async {
+    isLoading.value = true;
     try {
       final data = await ItemMasterRepo.getInnerBoxLabels();
       innerBoxLabelList.assignAll(data);
       innerBoxLabelNames.assignAll(data.map((e) => e.value));
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void onInnerBoxLabelSelected(String? label) {
@@ -203,11 +235,15 @@ class ItemMasterController extends GetxController {
   }
 
   Future<void> getMasterBoxLabels() async {
+    isLoading.value = true;
     try {
       final data = await ItemMasterRepo.getMasterBoxLabels();
       masterBoxLabelList.assignAll(data);
       masterBoxLabelNames.assignAll(data.map((e) => e.value));
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void onMasterBoxLabelSelected(String? label) {
@@ -215,11 +251,15 @@ class ItemMasterController extends GetxController {
   }
 
   Future<void> getNosPackings() async {
+    isLoading.value = true;
     try {
       final data = await ItemMasterRepo.getNosPackings();
       nosPackingList.assignAll(data);
       nosPackingNames.assignAll(data.map((e) => e.value));
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void onPacking10NosSelected(String? packing) {

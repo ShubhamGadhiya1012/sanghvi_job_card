@@ -4,13 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sanghvi_job_card/constants/color_constants.dart';
 import 'package:sanghvi_job_card/features/home/controllers/home_controller.dart';
+import 'package:sanghvi_job_card/features/home/widgets/job_card_card.dart';
 import 'package:sanghvi_job_card/features/home/widgets/sidebar_menu_item.dart';
+import 'package:sanghvi_job_card/features/job_card_entry/screens/job_card_screen.dart';
 import 'package:sanghvi_job_card/styles/font_sizes.dart';
 import 'package:sanghvi_job_card/styles/text_styles.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_paddings.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_spacings.dart';
+import 'package:sanghvi_job_card/widgets/app_button.dart';
 import 'package:sanghvi_job_card/widgets/app_loading_overlay.dart';
+import 'package:sanghvi_job_card/widgets/app_text_button_with_icon.dart';
+import 'package:sanghvi_job_card/widgets/app_text_form_field.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -276,17 +281,108 @@ class HomeScreen extends StatelessWidget {
   Widget _buildDrawerFooter(bool tablet) {
     return Container(
       padding: EdgeInsets.all(tablet ? 20 : 16),
-      child: Center(
-        child: Obx(
-          () => Text(
-            'v${_controller.appVersion.value}',
-            style: TextStyles.kBoldOutfit(
-              fontSize: tablet ? FontSizes.k14FontSize : FontSizes.k12FontSize,
-              color: kColorGrey,
-            ),
-          ),
+      decoration: BoxDecoration(
+        color: kColorWhite,
+        border: Border(
+          top: BorderSide(color: kColorGrey.withOpacity(0.3), width: 1),
         ),
       ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppButton(
+            title: 'Check for Update',
+            buttonHeight: tablet ? 50 : 45,
+            buttonColor: kColorPrimary,
+            titleSize: tablet ? FontSizes.k16FontSize : FontSizes.k14FontSize,
+            onPressed: () => _controller.redirectToPlayStore(),
+          ),
+          tablet ? AppSpaces.v12 : AppSpaces.v8,
+
+          AppButton(
+            title: 'Logout',
+            buttonHeight: tablet ? 50 : 45,
+            buttonColor: kColorWhite,
+            borderColor: kColorRed,
+            titleColor: kColorRed,
+            titleSize: tablet ? FontSizes.k16FontSize : FontSizes.k14FontSize,
+            onPressed: () {
+              Get.back();
+              _showLogoutDialog(tablet);
+            },
+          ),
+          tablet ? AppSpaces.v8 : AppSpaces.v6,
+
+          Obx(
+            () => Text(
+              'v${_controller.appVersion.value}',
+              style: TextStyles.kRegularOutfit(
+                fontSize: tablet
+                    ? FontSizes.k12FontSize
+                    : FontSizes.k10FontSize,
+                color: kColorGrey,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutDialog(bool tablet) {
+    showDialog(
+      context: Get.context!,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          backgroundColor: kColorWhite,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(tablet ? 16 : 12),
+          ),
+          title: Text(
+            'Confirm Logout',
+            style: TextStyles.kSemiBoldOutfit(
+              fontSize: tablet ? FontSizes.k20FontSize : FontSizes.k18FontSize,
+              color: kColorTextPrimary,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to logout?',
+            style: TextStyles.kRegularOutfit(
+              fontSize: tablet ? FontSizes.k16FontSize : FontSizes.k14FontSize,
+              color: kColorTextPrimary,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: Text(
+                'Cancel',
+                style: TextStyles.kMediumOutfit(
+                  fontSize: tablet
+                      ? FontSizes.k16FontSize
+                      : FontSizes.k14FontSize,
+                  color: kColorDarkGrey,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Get.back();
+                _controller.logoutUser();
+              },
+              child: Text(
+                'Logout',
+                style: TextStyles.kMediumOutfit(
+                  fontSize: tablet
+                      ? FontSizes.k16FontSize
+                      : FontSizes.k14FontSize,
+                  color: kColorRed,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -331,40 +427,161 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildDefaultScreen(bool tablet) {
-    return Container(
-      color: Colors.grey[50],
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.dashboard_outlined,
-              size: tablet ? 100 : 80,
-              color: kColorPrimary.withOpacity(0.3),
+    return Padding(
+      padding: tablet
+          ? AppPaddings.combined(horizontal: 24, vertical: 12)
+          : AppPaddings.p10,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: AppTextFormField(
+                  controller: _controller.searchController,
+                  hintText: 'Search Job Card',
+                  onChanged: (value) => _controller.refreshJobCards(),
+                ),
+              ),
+              tablet ? AppSpaces.h16 : AppSpaces.h10,
+              AppTextButtonWithIcon(
+                onPressed: () {
+                  Get.to(() => JobCardScreen());
+                },
+                title: 'Add New',
+                icon: Icons.add,
+              ),
+            ],
+          ),
+          tablet ? AppSpaces.v10 : AppSpaces.v6,
+
+          Expanded(
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (scrollInfo) {
+                if (scrollInfo.metrics.pixels ==
+                        scrollInfo.metrics.maxScrollExtent &&
+                    !_controller.isLoadingMore.value) {
+                  _controller.getJobCards(loadMore: true);
+                }
+                return true;
+              },
+              child: Obx(() {
+                if (_controller.jobCardList.isEmpty &&
+                    !_controller.isLoading.value) {
+                  return Center(
+                    child: Text(
+                      'No job cards found.',
+                      style: TextStyles.kMediumOutfit(
+                        fontSize: tablet
+                            ? FontSizes.k26FontSize
+                            : FontSizes.k18FontSize,
+                        color: kColorTextPrimary,
+                      ),
+                    ),
+                  );
+                }
+
+                return RefreshIndicator(
+                  backgroundColor: kColorWhite,
+                  color: kColorPrimary,
+                  strokeWidth: 2.5,
+                  onRefresh: () => _controller.refreshJobCards(),
+                  child: ListView.builder(
+                    itemCount:
+                        _controller.jobCardList.length +
+                        (_controller.isLoadingMore.value ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index < _controller.jobCardList.length) {
+                        final jobCard = _controller.jobCardList[index];
+                        return JobCardCard(
+                          jobCard: jobCard,
+                          onEdit: () {
+                            Get.to(() => JobCardScreen(), arguments: jobCard);
+                          },
+                          onDelete: () {
+                            _showDeleteDialog(context, jobCard.invno, tablet);
+                          },
+                        );
+                      } else {
+                        return Padding(
+                          padding: AppPaddings.p10,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: kColorPrimary,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                );
+              }),
             ),
-            tablet ? AppSpaces.v30 : AppSpaces.v24,
-            Text(
-              'Welcome to Sanghvi Product',
-              style: TextStyles.kBoldOutfit(
-                fontSize: tablet
-                    ? FontSizes.k32FontSize
-                    : FontSizes.k28FontSize,
-                color: kColorPrimary,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context, String invno, bool tablet) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          backgroundColor: kColorWhite,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(tablet ? 16 : 12),
+          ),
+          title: Text(
+            'Confirm Delete',
+            style: TextStyles.kSemiBoldOutfit(
+              fontSize: tablet ? FontSizes.k20FontSize : FontSizes.k18FontSize,
+              color: kColorTextPrimary,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to delete this job card?',
+            style: TextStyles.kRegularOutfit(
+              fontSize: tablet ? FontSizes.k16FontSize : FontSizes.k14FontSize,
+              color: kColorTextPrimary,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: Text(
+                'Cancel',
+                style: TextStyles.kMediumOutfit(
+                  fontSize: tablet
+                      ? FontSizes.k16FontSize
+                      : FontSizes.k14FontSize,
+                  color: kColorDarkGrey,
+                ),
               ),
             ),
-            tablet ? AppSpaces.v16 : AppSpaces.v12,
-            Text(
-              'Select a menu from the sidebar',
-              style: TextStyles.kRegularOutfit(
-                fontSize: tablet
-                    ? FontSizes.k18FontSize
-                    : FontSizes.k16FontSize,
-                color: kColorDarkGrey,
+            ElevatedButton(
+              onPressed: () {
+                Get.back();
+                _controller.deleteJobCard(invno);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kColorRed,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Delete',
+                style: TextStyles.kMediumOutfit(
+                  fontSize: tablet
+                      ? FontSizes.k16FontSize
+                      : FontSizes.k14FontSize,
+                  color: kColorWhite,
+                ),
               ),
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

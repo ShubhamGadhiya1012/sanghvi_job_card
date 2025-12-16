@@ -6,7 +6,7 @@ import 'package:sanghvi_job_card/features/auth/screens/login_screen.dart';
 import 'package:sanghvi_job_card/features/brand_master/screens/item_master_entry_screen.dart';
 import 'package:sanghvi_job_card/features/home/models/home_menu_item_dm.dart';
 import 'package:sanghvi_job_card/features/home/repos/home_repo.dart';
-import 'package:sanghvi_job_card/features/home/screens/home_screen.dart';
+import 'package:sanghvi_job_card/features/job_card_entry/models/job_card_dm.dart';
 import 'package:sanghvi_job_card/features/party_master/screens/party_master_entry_screen.dart';
 import 'package:sanghvi_job_card/features/user_settings/models/user_access_dm.dart';
 import 'package:sanghvi_job_card/features/user_settings/repos/user_access_repo.dart';
@@ -30,6 +30,14 @@ class HomeController extends GetxController {
   var fullName = ''.obs;
   var userType = ''.obs;
 
+  var jobCardList = <JobCardDm>[].obs;
+  var isLoadingMore = false.obs;
+  var hasMoreData = true.obs;
+  var isFetchingData = false;
+  final searchController = TextEditingController();
+  var currentPage = 1;
+  final pageSize = 10;
+
   @override
   void onInit() async {
     super.onInit();
@@ -38,6 +46,7 @@ class HomeController extends GetxController {
     await loadCompany();
     await checkAppVersion();
     await getUserAccess();
+    await getJobCards();
   }
 
   Future<void> loadUserInfo() async {
@@ -50,6 +59,78 @@ class HomeController extends GetxController {
         'There was an issue loading your data. Please try again.',
       );
     }
+  }
+
+  Future<void> getJobCards({bool loadMore = false}) async {
+    if (loadMore && !hasMoreData.value) return;
+    if (isFetchingData) return;
+
+    try {
+      isFetchingData = true;
+
+      if (!loadMore) {
+        isLoading.value = true;
+        currentPage = 1;
+        jobCardList.clear();
+        hasMoreData.value = true;
+      } else {
+        isLoadingMore.value = true;
+      }
+
+      final newJobCards = await HomeRepo.getJobCards(
+        search: searchController.text,
+        page: currentPage,
+        pageSize: pageSize,
+      );
+
+      if (newJobCards.isNotEmpty) {
+        final uniqueNew = newJobCards.where((newJobCard) {
+          return !jobCardList.any(
+            (existing) => existing.invno == newJobCard.invno,
+          );
+        }).toList();
+
+        if (uniqueNew.isNotEmpty) {
+          jobCardList.addAll(uniqueNew);
+          currentPage++;
+        } else {
+          hasMoreData.value = false;
+        }
+      } else {
+        hasMoreData.value = false;
+      }
+    } catch (e) {
+      showErrorSnackbar('Error', e.toString());
+    } finally {
+      isLoading.value = false;
+      isLoadingMore.value = false;
+      isFetchingData = false;
+    }
+  }
+
+  Future<void> deleteJobCard(String invno) async {
+    try {
+      isLoading.value = true;
+      final response = await HomeRepo.deleteJobCard(invno);
+
+      if (response != null && response['message'] != null) {
+        showSuccessSnackbar('Success', response['message']);
+        await refreshJobCards();
+      } else {
+        showErrorSnackbar(
+          'Error',
+          response['message'] ?? 'Failed to delete job card',
+        );
+      }
+    } catch (e) {
+      showErrorSnackbar('Error', e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> refreshJobCards() async {
+    await getJobCards(loadMore: false);
   }
 
   Future<void> _loadVersion() async {
@@ -186,7 +267,8 @@ class HomeController extends GetxController {
         menuName: 'Job Card',
         icon: Icons.assignment_outlined,
         onTap: () {
-          Get.to(() => HomeScreen());
+          Get.back();
+          refreshJobCards();
         },
       ),
       HomeMenuItemDm(

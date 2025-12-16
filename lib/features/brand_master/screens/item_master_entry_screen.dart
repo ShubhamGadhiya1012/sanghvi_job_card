@@ -8,9 +8,11 @@ import 'package:sanghvi_job_card/styles/font_sizes.dart';
 import 'package:sanghvi_job_card/styles/text_styles.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_paddings.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
+import 'package:sanghvi_job_card/utils/screen_utils/app_spacings.dart';
 import 'package:sanghvi_job_card/widgets/app_appbar.dart';
 import 'package:sanghvi_job_card/widgets/app_loading_overlay.dart';
 import 'package:sanghvi_job_card/widgets/app_text_button_with_icon.dart';
+import 'package:sanghvi_job_card/widgets/app_text_form_field.dart';
 
 class ItemMasterEntryScreen extends StatelessWidget {
   ItemMasterEntryScreen({super.key});
@@ -55,11 +57,17 @@ class ItemMasterEntryScreen extends StatelessWidget {
                 : AppPaddings.p10,
             child: Column(
               children: [
-                Obx(() {
-                  if (_controller.itemList.isEmpty &&
-                      !_controller.isLoading.value) {
-                    return Expanded(
-                      child: Center(
+                AppTextFormField(
+                  controller: _controller.searchController,
+                  hintText: 'Search Brand',
+                  onChanged: (value) => _controller.refreshItemList(),
+                ),
+                tablet ? AppSpaces.v10 : AppSpaces.v6,
+                Expanded(
+                  child: Obx(() {
+                    if (_controller.itemList.isEmpty &&
+                        !_controller.isLoading.value) {
+                      return Center(
                         child: Text(
                           'No items found.',
                           style: TextStyles.kMediumOutfit(
@@ -69,25 +77,29 @@ class ItemMasterEntryScreen extends StatelessWidget {
                             color: kColorTextPrimary,
                           ),
                         ),
+                      );
+                    }
+
+                    return RefreshIndicator(
+                      backgroundColor: kColorWhite,
+                      color: kColorPrimary,
+                      strokeWidth: 2.5,
+                      onRefresh: () => _controller.refreshItemList(),
+                      child: ListView.builder(
+                        itemCount: _controller.itemList.length,
+                        itemBuilder: (context, index) {
+                          final item = _controller.itemList[index];
+                          return ItemMasterCard(
+                            item: item,
+                            onEdit: () {
+                              Get.to(() => ItemMasterScreen(), arguments: item);
+                            },
+                          );
+                        },
                       ),
                     );
-                  }
-
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: _controller.itemList.length,
-                      itemBuilder: (context, index) {
-                        final item = _controller.itemList[index];
-                        return ItemMasterCard(
-                          item: item,
-                          onEdit: () {
-                            Get.to(() => ItemMasterScreen(), arguments: item);
-                          },
-                        );
-                      },
-                    ),
-                  );
-                }),
+                  }),
+                ),
               ],
             ),
           ),

@@ -75,7 +75,7 @@ class PartyMasterRepo {
       'GSTNumber': gstNumber,
       'PANNumber': panNumber,
     };
-    print(body);
+
     try {
       var response = await ApiService.postRequest(
         endpoint: '/Master/addPartyMaster',

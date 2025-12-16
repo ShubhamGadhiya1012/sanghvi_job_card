@@ -1,6 +1,8 @@
 class ItemMasterDm {
   final String iCode;
   final String iName;
+  final String pCode;
+  final String pName;
   final String description;
   final String weightPer10Nos;
   final String reelColour;
@@ -20,6 +22,8 @@ class ItemMasterDm {
   ItemMasterDm({
     required this.iCode,
     required this.iName,
+    required this.pCode,
+    required this.pName,
     required this.description,
     required this.weightPer10Nos,
     required this.reelColour,
@@ -41,6 +45,8 @@ class ItemMasterDm {
     return ItemMasterDm(
       iCode: json['ICode'] ?? '',
       iName: json['IName'] ?? '',
+      pCode: json['PCode'] ?? '',
+      pName: json['PName'] ?? '',
       description: json['Description'] ?? '',
       weightPer10Nos: json['WeightPer10Nos'] ?? '',
       reelColour: json['ReelColour'] ?? '',

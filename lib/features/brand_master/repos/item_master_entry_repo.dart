@@ -3,12 +3,17 @@ import 'package:sanghvi_job_card/services/api_service.dart';
 import 'package:sanghvi_job_card/utils/helpers/secure_storage_helper.dart';
 
 class ItemMasterEntryRepo {
-  static Future<List<ItemMasterDm>> getItemList() async {
+  static Future<List<ItemMasterDm>> getItemList({
+    required String search,
+  }) async {
     String? token = await SecureStorageHelper.read('token');
+
+    final queryParams = {'SearchText': search};
 
     final response = await ApiService.getRequest(
       endpoint: '/Master/getitems',
       token: token,
+      queryParams: queryParams,
     );
 
     if (response == null || response['data'] == null) return [];

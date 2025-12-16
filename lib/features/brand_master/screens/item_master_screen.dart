@@ -4,7 +4,11 @@ import 'package:get/get.dart';
 import 'package:sanghvi_job_card/constants/color_constants.dart';
 import 'package:sanghvi_job_card/features/brand_master/controllers/item_master_controller.dart';
 import 'package:sanghvi_job_card/features/brand_master/models/color_dm.dart';
+import 'package:sanghvi_job_card/features/brand_master/models/inner_box_label_dm.dart';
 import 'package:sanghvi_job_card/features/brand_master/models/item_master_dm.dart';
+import 'package:sanghvi_job_card/features/brand_master/models/master_box_label_dm.dart';
+import 'package:sanghvi_job_card/features/brand_master/models/nos_packing_dm.dart';
+import 'package:sanghvi_job_card/features/brand_master/models/reel_type_dm.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_paddings.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_spacings.dart';
@@ -76,12 +80,10 @@ class ItemMasterScreen extends StatelessWidget {
                             tablet ? AppSpaces.v16 : AppSpaces.v10,
                             Obx(
                               () => AppDropdown(
-                                hintText: 'Party Code',
+                                hintText: 'Party Name',
                                 items: _controller.partyNames,
                                 selectedItem:
-                                    _controller.selectedParty.value != null
-                                    ? '${_controller.selectedParty.value!.pCode} - ${_controller.selectedParty.value!.pName}'
-                                    : null,
+                                    _controller.selectedParty.value?.pName,
                                 onChanged: _controller.onPartySelected,
                                 validatorText: 'Please select a party',
                               ),
@@ -153,7 +155,10 @@ class ItemMasterScreen extends StatelessWidget {
                             Obx(
                               () => AppDropdown(
                                 hintText: 'Reel Type',
-                                items: _controller.reelTypeNames,
+                                items: [
+                                  '+ Add New Reel Type',
+                                  ..._controller.reelTypeNames,
+                                ],
                                 selectedItem:
                                     _controller
                                         .selectedReelType
@@ -161,7 +166,30 @@ class ItemMasterScreen extends StatelessWidget {
                                         .isNotEmpty
                                     ? _controller.selectedReelType.value
                                     : null,
-                                onChanged: _controller.onReelTypeSelected,
+                                onChanged: (selectedValue) {
+                                  if (selectedValue == '+ Add New Reel Type') {
+                                    _showAddNewDialog(
+                                      context,
+                                      title: 'Add New Reel Type',
+                                      hintText: 'Enter reel type',
+                                      onAdd: (value) {
+                                        final newReelType = ReelTypeDm(
+                                          value: value,
+                                        );
+                                        _controller.reelTypeList.add(
+                                          newReelType,
+                                        );
+                                        _controller.reelTypeNames.add(value);
+                                        _controller.selectedReelType.value =
+                                            value;
+                                      },
+                                    );
+                                  } else {
+                                    _controller.onReelTypeSelected(
+                                      selectedValue,
+                                    );
+                                  }
+                                },
                                 validatorText: 'Please select reel type',
                               ),
                             ),
@@ -289,7 +317,10 @@ class ItemMasterScreen extends StatelessWidget {
                             Obx(
                               () => AppDropdown(
                                 hintText: 'Packing 10 Nos',
-                                items: _controller.nosPackingNames,
+                                items: [
+                                  '+ Add New Packing',
+                                  ..._controller.nosPackingNames,
+                                ],
                                 selectedItem:
                                     _controller
                                         .selectedPacking10Nos
@@ -297,7 +328,30 @@ class ItemMasterScreen extends StatelessWidget {
                                         .isNotEmpty
                                     ? _controller.selectedPacking10Nos.value
                                     : null,
-                                onChanged: _controller.onPacking10NosSelected,
+                                onChanged: (selectedValue) {
+                                  if (selectedValue == '+ Add New Packing') {
+                                    _showAddNewDialog(
+                                      context,
+                                      title: 'Add New Packing',
+                                      hintText: 'Enter packing type',
+                                      onAdd: (value) {
+                                        final newPacking = NosPackingDm(
+                                          value: value,
+                                        );
+                                        _controller.nosPackingList.add(
+                                          newPacking,
+                                        );
+                                        _controller.nosPackingNames.add(value);
+                                        _controller.selectedPacking10Nos.value =
+                                            value;
+                                      },
+                                    );
+                                  } else {
+                                    _controller.onPacking10NosSelected(
+                                      selectedValue,
+                                    );
+                                  }
+                                },
                                 validatorText: 'Please select packing',
                               ),
                             ),
@@ -305,7 +359,10 @@ class ItemMasterScreen extends StatelessWidget {
                             Obx(
                               () => AppDropdown(
                                 hintText: 'Inner Box Label',
-                                items: _controller.innerBoxLabelNames,
+                                items: [
+                                  '+ Add New Label',
+                                  ..._controller.innerBoxLabelNames,
+                                ],
                                 selectedItem:
                                     _controller
                                         .selectedInnerBoxLabel
@@ -313,7 +370,34 @@ class ItemMasterScreen extends StatelessWidget {
                                         .isNotEmpty
                                     ? _controller.selectedInnerBoxLabel.value
                                     : null,
-                                onChanged: _controller.onInnerBoxLabelSelected,
+                                onChanged: (selectedValue) {
+                                  if (selectedValue == '+ Add New Label') {
+                                    _showAddNewDialog(
+                                      context,
+                                      title: 'Add New Inner Box Label',
+                                      hintText: 'Enter label name',
+                                      onAdd: (value) {
+                                        final newLabel = InnerBoxLabelDm(
+                                          value: value,
+                                        );
+                                        _controller.innerBoxLabelList.add(
+                                          newLabel,
+                                        );
+                                        _controller.innerBoxLabelNames.add(
+                                          value,
+                                        );
+                                        _controller
+                                                .selectedInnerBoxLabel
+                                                .value =
+                                            value;
+                                      },
+                                    );
+                                  } else {
+                                    _controller.onInnerBoxLabelSelected(
+                                      selectedValue,
+                                    );
+                                  }
+                                },
                                 validatorText: 'Please select inner box label',
                               ),
                             ),
@@ -412,7 +496,10 @@ class ItemMasterScreen extends StatelessWidget {
                             Obx(
                               () => AppDropdown(
                                 hintText: 'Master Box Label',
-                                items: _controller.masterBoxLabelNames,
+                                items: [
+                                  '+ Add New Label',
+                                  ..._controller.masterBoxLabelNames,
+                                ],
                                 selectedItem:
                                     _controller
                                         .selectedMasterBoxLabel
@@ -420,7 +507,34 @@ class ItemMasterScreen extends StatelessWidget {
                                         .isNotEmpty
                                     ? _controller.selectedMasterBoxLabel.value
                                     : null,
-                                onChanged: _controller.onMasterBoxLabelSelected,
+                                onChanged: (selectedValue) {
+                                  if (selectedValue == '+ Add New Label') {
+                                    _showAddNewDialog(
+                                      context,
+                                      title: 'Add New Master Box Label',
+                                      hintText: 'Enter label name',
+                                      onAdd: (value) {
+                                        final newLabel = MasterBoxLabelDm(
+                                          value: value,
+                                        );
+                                        _controller.masterBoxLabelList.add(
+                                          newLabel,
+                                        );
+                                        _controller.masterBoxLabelNames.add(
+                                          value,
+                                        );
+                                        _controller
+                                                .selectedMasterBoxLabel
+                                                .value =
+                                            value;
+                                      },
+                                    );
+                                  } else {
+                                    _controller.onMasterBoxLabelSelected(
+                                      selectedValue,
+                                    );
+                                  }
+                                },
                                 validatorText: 'Please select master box label',
                               ),
                             ),
