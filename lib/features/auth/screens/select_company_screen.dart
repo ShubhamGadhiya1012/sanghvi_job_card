@@ -121,12 +121,14 @@ class _SelectCompanyScreenState extends State<SelectCompanyScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // Icon
                                 Center(
                                   child: Container(
-                                    padding: EdgeInsets.all(
-                                      web ? 16 : (tablet ? 20 : 16),
-                                    ),
+                                    padding: web
+                                        ? AppPaddings.p16
+                                        : (tablet
+                                              ? AppPaddings.p20
+                                              : AppPaddings.p16),
+
                                     decoration: BoxDecoration(
                                       color: kColorWhite.withOpacity(0.2),
                                       shape: BoxShape.circle,

@@ -5,6 +5,7 @@ import 'package:sanghvi_job_card/constants/color_constants.dart';
 import 'package:sanghvi_job_card/features/home/models/home_menu_item_dm.dart';
 import 'package:sanghvi_job_card/styles/font_sizes.dart';
 import 'package:sanghvi_job_card/styles/text_styles.dart';
+import 'package:sanghvi_job_card/utils/screen_utils/app_paddings.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_spacings.dart';
 
@@ -31,11 +32,11 @@ class SidebarMenuItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.symmetric(
+        margin: AppPaddings.combined(
           horizontal: tablet ? 12 : 8,
           vertical: tablet ? 6 : 4,
         ),
-        padding: EdgeInsets.symmetric(
+        padding: AppPaddings.combined(
           horizontal: tablet ? 20 : 16,
           vertical: tablet ? 18 : 14,
         ),
@@ -98,13 +99,13 @@ class SubMenuItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(
+        margin: AppPaddings.custom(
           left: tablet ? 56 : 48,
           right: tablet ? 12 : 8,
           top: tablet ? 4 : 2,
           bottom: tablet ? 4 : 2,
         ),
-        padding: EdgeInsets.symmetric(
+        padding: AppPaddings.combined(
           horizontal: tablet ? 20 : 16,
           vertical: tablet ? 16 : 12,
         ),
