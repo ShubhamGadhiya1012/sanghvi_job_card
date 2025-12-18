@@ -19,6 +19,7 @@ import 'package:sanghvi_job_card/utils/dialogs/app_dialogs.dart';
 import 'package:sanghvi_job_card/utils/helpers/device_helper.dart';
 import 'package:sanghvi_job_card/utils/helpers/secure_storage_helper.dart';
 import 'package:sanghvi_job_card/utils/helpers/version_helper.dart';
+import 'package:sanghvi_job_card/utils/screen_utils/app_paddings.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -264,7 +265,7 @@ class HomeController extends GetxController {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: EdgeInsets.symmetric(
+                    padding: AppPaddings.combined(
                       horizontal: tablet ? 24 : 20,
                       vertical: tablet ? 12 : 10,
                     ),
@@ -294,7 +295,7 @@ class HomeController extends GetxController {
 
   Future<void> redirectToPlayStore() async {
     const playStoreUrl =
-        'https://play.google.com/store/apps/details?id=com.sanghvi.jobcard';
+        'https://play.google.com/store/apps/details?id=com.jinee.sanghvi_job_card';
 
     final uri = Uri.parse(playStoreUrl);
     if (await canLaunchUrl(uri)) {

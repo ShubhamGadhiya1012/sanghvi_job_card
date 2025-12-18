@@ -47,7 +47,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildAppBar(BuildContext context, bool tablet) {
     return Container(
-      padding: EdgeInsets.only(
+      padding: AppPaddings.custom(
         top: MediaQuery.of(context).padding.top + (tablet ? 16 : 12),
         left: tablet ? 20 : 16,
         right: tablet ? 20 : 16,
@@ -193,7 +193,7 @@ class HomeScreen extends StatelessWidget {
   Widget _buildDrawerHeader(BuildContext context, bool tablet) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.only(
+      padding: AppPaddings.custom(
         top: MediaQuery.of(context).padding.top + (tablet ? 24 : 20),
         left: tablet ? 24 : 20,
         right: tablet ? 24 : 20,
@@ -220,7 +220,7 @@ class HomeScreen extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(tablet ? 14 : 12),
+            padding: tablet ? AppPaddings.p14 : AppPaddings.p12,
             decoration: BoxDecoration(
               color: kColorWhite.withOpacity(0.2),
               shape: BoxShape.circle,
@@ -287,7 +287,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildDrawerFooter(bool tablet) {
     return Container(
-      padding: EdgeInsets.all(tablet ? 20 : 16),
+      padding: tablet ? AppPaddings.p20 : AppPaddings.p16,
       decoration: BoxDecoration(
         color: kColorWhite,
         border: Border(
