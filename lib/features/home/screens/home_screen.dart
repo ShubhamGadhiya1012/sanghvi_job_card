@@ -91,12 +91,18 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          AppTextButtonWithIcon(
-            onPressed: () {
-              Get.to(() => JobCardScreen());
-            },
-            title: 'Add New',
-            icon: Icons.add,
+          Obx(
+            () =>
+                _controller.menuAccess.isNotEmpty &&
+                    _controller.hasJobCardAccess
+                ? AppTextButtonWithIcon(
+                    onPressed: () {
+                      Get.to(() => JobCardScreen());
+                    },
+                    title: 'Add New',
+                    icon: Icons.add,
+                  )
+                : const SizedBox.shrink(),
           ),
         ],
       ),
@@ -434,90 +440,95 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildDefaultScreen(bool tablet) {
-    return Padding(
-      padding: tablet
-          ? AppPaddings.combined(horizontal: 24, vertical: 12)
-          : AppPaddings.p10,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: AppTextFormField(
-                  controller: _controller.searchController,
-                  hintText: 'Search Job Card',
-                  onChanged: (value) => _controller.refreshJobCards(),
-                ),
-              ),
-            ],
-          ),
+    return Obx(() {
+      if (!_controller.hasJobCardAccess) {
+        return _buildNoAccessWidget(tablet);
+      }
 
-          Expanded(
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (scrollInfo) {
-                if (scrollInfo.metrics.pixels ==
-                        scrollInfo.metrics.maxScrollExtent &&
-                    !_controller.isLoadingMore.value) {
-                  _controller.getJobCards(loadMore: true);
-                }
-                return true;
-              },
-              child: Obx(() {
-                if (_controller.jobCardList.isEmpty &&
-                    !_controller.isLoading.value) {
-                  return Center(
-                    child: Text(
-                      'No job cards found.',
-                      style: TextStyles.kMediumOutfit(
-                        fontSize: tablet
-                            ? FontSizes.k26FontSize
-                            : FontSizes.k18FontSize,
-                        color: kColorTextPrimary,
+      return Padding(
+        padding: tablet
+            ? AppPaddings.combined(horizontal: 24, vertical: 12)
+            : AppPaddings.p10,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: AppTextFormField(
+                    controller: _controller.searchController,
+                    hintText: 'Search Job Card',
+                    onChanged: (value) => _controller.refreshJobCards(),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (scrollInfo) {
+                  if (scrollInfo.metrics.pixels ==
+                          scrollInfo.metrics.maxScrollExtent &&
+                      !_controller.isLoadingMore.value) {
+                    _controller.getJobCards(loadMore: true);
+                  }
+                  return true;
+                },
+                child: Obx(() {
+                  if (_controller.jobCardList.isEmpty &&
+                      !_controller.isLoading.value) {
+                    return Center(
+                      child: Text(
+                        'No job cards found.',
+                        style: TextStyles.kMediumOutfit(
+                          fontSize: tablet
+                              ? FontSizes.k26FontSize
+                              : FontSizes.k18FontSize,
+                          color: kColorTextPrimary,
+                        ),
                       ),
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    backgroundColor: kColorWhite,
+                    color: kColorPrimary,
+                    strokeWidth: 2.5,
+                    onRefresh: () => _controller.refreshJobCards(),
+                    child: ListView.builder(
+                      itemCount:
+                          _controller.jobCardList.length +
+                          (_controller.isLoadingMore.value ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index < _controller.jobCardList.length) {
+                          final jobCard = _controller.jobCardList[index];
+                          return JobCardCard(
+                            jobCard: jobCard,
+                            onEdit: () {
+                              Get.to(() => JobCardScreen(), arguments: jobCard);
+                            },
+                            onDelete: () {
+                              _showDeleteDialog(context, jobCard.invno, tablet);
+                            },
+                          );
+                        } else {
+                          return Padding(
+                            padding: AppPaddings.p10,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: kColorPrimary,
+                              ),
+                            ),
+                          );
+                        }
+                      },
                     ),
                   );
-                }
-
-                return RefreshIndicator(
-                  backgroundColor: kColorWhite,
-                  color: kColorPrimary,
-                  strokeWidth: 2.5,
-                  onRefresh: () => _controller.refreshJobCards(),
-                  child: ListView.builder(
-                    itemCount:
-                        _controller.jobCardList.length +
-                        (_controller.isLoadingMore.value ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index < _controller.jobCardList.length) {
-                        final jobCard = _controller.jobCardList[index];
-                        return JobCardCard(
-                          jobCard: jobCard,
-                          onEdit: () {
-                            Get.to(() => JobCardScreen(), arguments: jobCard);
-                          },
-                          onDelete: () {
-                            _showDeleteDialog(context, jobCard.invno, tablet);
-                          },
-                        );
-                      } else {
-                        return Padding(
-                          padding: AppPaddings.p10,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: kColorPrimary,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                );
-              }),
+                }),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
   void _showDeleteDialog(BuildContext context, String invno, bool tablet) {

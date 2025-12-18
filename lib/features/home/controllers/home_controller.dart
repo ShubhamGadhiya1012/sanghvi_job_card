@@ -43,6 +43,10 @@ class HomeController extends GetxController {
   var currentPage = 1;
   final pageSize = 10;
 
+  bool get hasJobCardAccess {
+    return menuAccess.any((menu) => menu.menuName == 'Job Card' && menu.access);
+  }
+
   @override
   void onInit() async {
     super.onInit();

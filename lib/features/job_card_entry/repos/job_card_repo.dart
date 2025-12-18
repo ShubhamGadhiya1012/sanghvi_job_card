@@ -100,20 +100,20 @@ class JobCardRepo {
         }
       }
 
-      print('================ JOB CARD API PAYLOAD ================');
+      // print('================ JOB CARD API PAYLOAD ================');
 
-      fields.forEach((key, value) {
-        if (value.toString().isNotEmpty) {
-          print('$key : $value');
-        }
-      });
+      // fields.forEach((key, value) {
+      //   if (value.toString().isNotEmpty) {
+      //     print('$key : $value');
+      //   }
+      // });
 
-      for (var file in multipartFiles) {
-        print('${file.field} : ${file.filename}');
-      }
+      // for (var file in multipartFiles) {
+      //   print('${file.field} : ${file.filename}');
+      // }
 
-      print('======================================================');
- 
+      // print('======================================================');
+
       final response = await ApiService.postFormData(
         endpoint: '/JobCard/addUpdateJobCard',
         fields: fields,
