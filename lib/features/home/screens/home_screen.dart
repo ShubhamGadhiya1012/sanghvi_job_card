@@ -505,6 +505,10 @@ class HomeScreen extends StatelessWidget {
                             onEdit: () {
                               Get.to(() => JobCardScreen(), arguments: jobCard);
                             },
+                            onPrint: () {
+                              // Add this
+                              _controller.generateJobCardPdf(jobCard);
+                            },
                             onDelete: () {
                               _showDeleteDialog(context, jobCard.invno, tablet);
                             },

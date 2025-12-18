@@ -12,10 +12,12 @@ class JobCardCard extends StatelessWidget {
   final JobCardDm jobCard;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final VoidCallback? onPrint;
 
   const JobCardCard({
     super.key,
     required this.jobCard,
+    this.onPrint,
     this.onEdit,
     this.onDelete,
   });
@@ -117,6 +119,39 @@ class JobCardCard extends StatelessWidget {
                                 fontSize: isTablet ? 15 : 14,
                                 fontWeight: FontWeight.w600,
                                 color: kColorPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    AppSpaces.h10,
+                    InkWell(
+                      onTap: onPrint, // Add this parameter
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: AppPaddings.combined(
+                          horizontal: isTablet ? 12 : 10,
+                          vertical: isTablet ? 8 : 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.print_outlined,
+                              size: isTablet ? 18 : 16,
+                              color: Colors.green,
+                            ),
+                            AppSpaces.h6,
+                            Text(
+                              "Print",
+                              style: TextStyle(
+                                fontSize: isTablet ? 15 : 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.green,
                               ),
                             ),
                           ],

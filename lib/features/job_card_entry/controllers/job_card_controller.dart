@@ -34,6 +34,23 @@ class JobCardController extends GetxController {
   var extraPrintedReelController = TextEditingController();
   var nos10PackingController = TextEditingController();
 
+  // Auto-filled fields from Item Master (read-only)
+  var tapeDimensionController = TextEditingController();
+  var weightPer10NosController = TextEditingController();
+  var reelColourController = TextEditingController();
+  var reelTypeController = TextEditingController();
+  var outerColourController = TextEditingController();
+  var mrpController = TextEditingController();
+  var reelPrintColourController = TextEditingController();
+  var outerPrintColourController = TextEditingController();
+  var packing10NosController = TextEditingController();
+  var innerBoxLabelController = TextEditingController();
+  var innerBoxQtyController = TextEditingController();
+  var innerBoxColourController = TextEditingController();
+  var masterBoxTypeController = TextEditingController();
+  var masterBoxColourController = TextEditingController();
+  var masterBoxLabelController = TextEditingController();
+
   var partyList = <PartyMasterDm>[].obs;
   var partyNames = <String>[].obs;
   var selectedParty = Rx<PartyMasterDm?>(null);
@@ -100,6 +117,23 @@ class JobCardController extends GetxController {
         orElse: () => itemList.first,
       );
       selectedItem.value = selected;
+
+      // Auto-fill item master fields
+      tapeDimensionController.text = selected.description;
+      weightPer10NosController.text = selected.weightPer10Nos;
+      reelColourController.text = selected.reelColour;
+      reelTypeController.text = selected.reelType;
+      outerColourController.text = selected.outerColour;
+      mrpController.text = selected.mrp;
+      reelPrintColourController.text = selected.reelPrintColour;
+      outerPrintColourController.text = selected.outerPrintColour;
+      packing10NosController.text = selected.nos10Packing;
+      innerBoxLabelController.text = selected.innerBoxLabel;
+      innerBoxQtyController.text = selected.innerBoxQty;
+      innerBoxColourController.text = selected.innerBoxColour;
+      masterBoxTypeController.text = selected.masterBoxType;
+      masterBoxColourController.text = selected.masterBoxColour;
+      masterBoxLabelController.text = selected.masterBoxLabel;
     }
   }
 
@@ -159,6 +193,23 @@ class JobCardController extends GetxController {
           orElse: () => throw Exception('Item not found'),
         );
         selectedItem.value = item;
+
+        // ADD THIS: Auto-fill item master fields when editing
+        tapeDimensionController.text = item.description;
+        weightPer10NosController.text = item.weightPer10Nos;
+        reelColourController.text = item.reelColour;
+        reelTypeController.text = item.reelType;
+        outerColourController.text = item.outerColour;
+        mrpController.text = item.mrp;
+        reelPrintColourController.text = item.reelPrintColour;
+        outerPrintColourController.text = item.outerPrintColour;
+        packing10NosController.text = item.nos10Packing;
+        innerBoxLabelController.text = item.innerBoxLabel;
+        innerBoxQtyController.text = item.innerBoxQty;
+        innerBoxColourController.text = item.innerBoxColour;
+        masterBoxTypeController.text = item.masterBoxType;
+        masterBoxColourController.text = item.masterBoxColour;
+        masterBoxLabelController.text = item.masterBoxLabel;
       } catch (e) {
         selectedItem.value = null;
       }
@@ -312,6 +363,7 @@ class JobCardController extends GetxController {
     }
   }
 
+
   void clearAll() {
     currentInvno.value = '';
     dateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -334,6 +386,22 @@ class JobCardController extends GetxController {
 
     attachmentFiles.clear();
     existingAttachmentUrls.clear();
+
+    tapeDimensionController.clear();
+    weightPer10NosController.clear();
+    reelColourController.clear();
+    reelTypeController.clear();
+    outerColourController.clear();
+    mrpController.clear();
+    reelPrintColourController.clear();
+    outerPrintColourController.clear();
+    packing10NosController.clear();
+    innerBoxLabelController.clear();
+    innerBoxQtyController.clear();
+    innerBoxColourController.clear();
+    masterBoxTypeController.clear();
+    masterBoxColourController.clear();
+    masterBoxLabelController.clear();
 
     isEditMode.value = false;
   }
