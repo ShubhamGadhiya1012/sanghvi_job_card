@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sanghvi_job_card/constants/color_constants.dart';
 import 'package:sanghvi_job_card/features/auth/screens/login_screen.dart';
+import 'package:sanghvi_job_card/features/brand_master/models/item_master_dm.dart';
+import 'package:sanghvi_job_card/features/brand_master/repos/item_master_entry_repo.dart';
 import 'package:sanghvi_job_card/features/brand_master/screens/item_master_entry_screen.dart';
 import 'package:sanghvi_job_card/features/home/models/home_menu_item_dm.dart';
 import 'package:sanghvi_job_card/features/home/repos/home_repo.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/models/job_card_dm.dart';
+import 'package:sanghvi_job_card/features/home/models/job_card_dm.dart';
 import 'package:sanghvi_job_card/features/home/widgets/job_card_pdf_screen.dart';
 import 'package:sanghvi_job_card/features/party_master/screens/party_master_entry_screen.dart';
 import 'package:sanghvi_job_card/features/user_settings/models/user_access_dm.dart';
@@ -375,12 +377,50 @@ class HomeController extends GetxController {
   Future<void> generateJobCardPdf(JobCardDm jobCard) async {
     try {
       isLoading.value = true;
-      await JobCardPdfScreen.generateJobCardPdf(jobCard: jobCard);
+
+      final itemMasterData = await getItemMasterDataForJobCard(jobCard.iCode);
+
+      await JobCardPdfScreen.generateJobCardPdf(
+        jobCard: jobCard,
+        itemMasterData: itemMasterData,
+      );
     } catch (e) {
       print(e.toString());
       showErrorSnackbar('Error', 'Failed to generate PDF: ${e.toString()}');
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<ItemMasterDm?> getItemMasterDataForJobCard(String iCode) async {
+    try {
+      final items = await ItemMasterEntryRepo.getItemList(search: '');
+      return items.firstWhere(
+        (item) => item.iCode == iCode,
+        orElse: () => ItemMasterDm(
+          iCode: '',
+          iName: '',
+          pCode: '',
+          pName: '',
+          description: '',
+          weightPer10Nos: '',
+          reelColour: '',
+          reelType: '',
+          outerColour: '',
+          mrp: '',
+          reelPrintColour: '',
+          outerPrintColour: '',
+          nos10Packing: '',
+          innerBoxLabel: '',
+          innerBoxQty: '',
+          innerBoxColour: '',
+          masterBoxType: '',
+          masterBoxColour: '',
+          masterBoxLabel: '',
+        ),
+      );
+    } catch (e) {
+      return null;
     }
   }
 }

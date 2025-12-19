@@ -4,9 +4,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   static String kBaseUrl = 'http://169.254.1.2:8081/api';
 
-
-  // static const String kBaseUrl =
-  //     'http://192.168.0.145:8080/api'; // JInee
+  // static String kBaseUrl = 'http://192.168.0.145:5015/api'; // JInee
 
   static Future<dynamic> getRequest({
     String? endpoint,

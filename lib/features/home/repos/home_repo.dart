@@ -1,4 +1,4 @@
-import 'package:sanghvi_job_card/features/job_card_entry/models/job_card_dm.dart';
+import 'package:sanghvi_job_card/features/home/models/job_card_dm.dart';
 import 'package:sanghvi_job_card/services/api_service.dart';
 import 'package:sanghvi_job_card/utils/helpers/secure_storage_helper.dart';
 

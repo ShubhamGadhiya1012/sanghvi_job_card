@@ -1,18 +1,20 @@
 import 'dart:io';
 import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:sanghvi_job_card/features/job_card_entry/models/job_card_dm.dart';
+import 'package:sanghvi_job_card/features/brand_master/models/item_master_dm.dart';
+import 'package:sanghvi_job_card/features/home/models/job_card_dm.dart';
 import 'package:sanghvi_job_card/utils/dialogs/app_dialogs.dart';
-import 'package:path_provider/path_provider.dart';
 
 class JobCardPdfScreen {
-  static Future<void> generateJobCardPdf({required JobCardDm jobCard}) async {
+  static Future<void> generateJobCardPdf({
+    required JobCardDm jobCard,
+    ItemMasterDm? itemMasterData,
+  }) async {
     try {
       final pdf = pw.Document();
-
-      final borderColor = PdfColors.grey600;
-      final textColor = PdfColors.black;
+      final border = pw.Border.all(width: 0.7, color: PdfColors.grey700);
 
       pdf.addPage(
         pw.Page(
@@ -22,317 +24,203 @@ class JobCardPdfScreen {
             return pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                _buildRow(
-                  label: 'JOB CARD NO.',
-                  value: jobCard.invno,
-                  borderColor: borderColor,
-                  textColor: textColor,
-                  isBold: true,
-                  colspan: 3,
+                /// ---------- HEADER ----------
+                pw.Container(
+                  width: double.infinity,
+                  padding: const pw.EdgeInsets.all(12),
+                  decoration: pw.BoxDecoration(border: border),
+                  child: pw.Column(
+                    children: [
+                      pw.Text(
+                        'JOB CARD',
+                        style: pw.TextStyle(
+                          fontSize: 18,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
+                      pw.SizedBox(height: 4),
+                      pw.Text(
+                        'Job Card No : ${_v(jobCard.invno)}',
+                        style: pw.TextStyle(
+                          fontSize: 11,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      flex: 2,
-                      child: _buildCell(
-                        label: 'PARTY NAME',
-                        value: jobCard.pName,
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'DATE',
-                        value: _formatDate(jobCard.date),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                        isCenter: true,
-                      ),
-                    ),
-                  ],
+                pw.SizedBox(height: 10),
+
+                /// ---------- PARTY DETAILS ----------
+                _twoColumnRow(
+                  leftLabel: 'Party Name',
+                  leftValue: _v(jobCard.pName),
+                  rightLabel: 'Date',
+                  rightValue: _formatDate(jobCard.date),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      flex: 2,
-                      child: _buildCell(
-                        label: 'P.O.NO.',
-                        value: jobCard.poNo,
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'DATE',
-                        value: _formatDate(jobCard.poDate),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                        isCenter: true,
-                      ),
-                    ),
-                  ],
+                _twoColumnRow(
+                  leftLabel: 'P.O. No',
+                  leftValue: _v(jobCard.poNo),
+                  rightLabel: 'P.O. Date',
+                  rightValue: _formatDate(jobCard.poDate),
+                  border: border,
                 ),
 
-                _buildRow(
-                  label: 'BRAND',
-                  value: jobCard.iName,
-                  borderColor: borderColor,
-                  textColor: textColor,
-                  isCenter: true,
+                _singleRow(
+                  label: 'Item Name',
+                  value: _v(jobCard.iName),
+                  border: border,
                 ),
 
-                _buildRow(
-                  label: 'TAPE DIMENSION',
-                  value: _getItemDetail(jobCard, 'tapeDimension'),
-                  borderColor: borderColor,
-                  textColor: textColor,
-                  isCenter: true,
+                pw.SizedBox(height: 8),
+
+                /// ---------- PRODUCT DETAILS ----------
+                _sectionTitle('PRODUCT DETAILS'),
+
+                _singleRow(
+                  label: 'Tape Dimension',
+                  value: _v(itemMasterData?.description ?? ''),
+                  border: border,
                 ),
 
-                _buildRow(
-                  label: 'WEIGHT PER 10 NOS.',
-                  value: _getItemDetail(jobCard, 'weightPer10Nos'),
-                  borderColor: borderColor,
-                  textColor: textColor,
-                  isCenter: true,
+                _singleRow(
+                  label: 'Weight Per 10 Nos',
+                  value: _v(itemMasterData?.weightPer10Nos ?? ''),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'REEL COLOR',
-                        value: _getItemDetail(jobCard, 'reelColour'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'REEL TYPE',
-                        value: _getItemDetail(jobCard, 'reelType'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                  ],
+                _twoColumnRow(
+                  leftLabel: 'Reel Color',
+                  leftValue: _v(itemMasterData?.reelColour ?? ''),
+                  rightLabel: 'Reel Type',
+                  rightValue: _v(itemMasterData?.reelType ?? ''),
+                  border: border,
                 ),
 
-                _buildRow(
-                  label: 'OUTER COLOR',
-                  value: _getItemDetail(jobCard, 'outerColour'),
-                  borderColor: borderColor,
-                  textColor: textColor,
-                  isCenter: true,
+                _singleRow(
+                  label: 'Outer Color',
+                  value: _v(itemMasterData?.outerColour ?? ''),
+                  border: border,
                 ),
 
-                _buildRow(
-                  label: 'MRP ON REEL',
-                  value: _getItemDetail(jobCard, 'mrp'),
-                  borderColor: borderColor,
-                  textColor: textColor,
-                  isCenter: true,
+                _singleRow(
+                  label: 'MRP On Reel',
+                  value: _v(itemMasterData?.mrp ?? ''),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'REEL PRINT COLOR',
-                        value: _getItemDetail(jobCard, 'reelPrintColour'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'OUTER PRINT COLOR',
-                        value: _getItemDetail(jobCard, 'outerPrintColour'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                  ],
+                _twoColumnRow(
+                  leftLabel: 'Reel Print Color',
+                  leftValue: _v(itemMasterData?.reelPrintColour ?? ''),
+                  rightLabel: 'Outer Print Color',
+                  rightValue: _v(itemMasterData?.outerPrintColour ?? ''),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'ORDERED QUANTITY',
-                        value: jobCard.orderQty,
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'PRODUCTION',
-                        value: jobCard.productionQty,
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                  ],
+                pw.SizedBox(height: 8),
+
+                /// ---------- QUANTITY DETAILS ----------
+                _sectionTitle('QUANTITY DETAILS'),
+
+                _twoColumnRow(
+                  leftLabel: 'Ordered Qty',
+                  leftValue: _v(jobCard.orderQty),
+                  rightLabel: 'Production Qty',
+                  rightValue: _v(jobCard.productionQty),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: '10 NOS. PACKING',
-                        value: _getItemDetail(jobCard, 'nos10Packing'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'INNER BOX LABEL',
-                        value: _getItemDetail(jobCard, 'innerBoxLabel'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                  ],
+                _twoColumnRow(
+                  leftLabel: '10 Nos Packing',
+                  leftValue: _v(itemMasterData?.nos10Packing ?? ''),
+                  rightLabel: 'Inner Box Qty',
+                  rightValue: _v(itemMasterData?.innerBoxQty ?? ''),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'INNER BOX QUANTITY',
-                        value: _getItemDetail(jobCard, 'innerBoxQty'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'INNER BOX COLOR',
-                        value: _getItemDetail(jobCard, 'innerBoxColour'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                  ],
+                _twoColumnRow(
+                  leftLabel: 'Inner Box Label',
+                  leftValue: _v(itemMasterData?.innerBoxLabel ?? ''),
+                  rightLabel: 'Inner Box Color',
+                  rightValue: _v(itemMasterData?.innerBoxColour ?? ''),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'MASTER BOX QUANTITY',
-                        value: _getItemDetail(jobCard, 'masterBoxType'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'MASTERBOX COLOR',
-                        value: _getItemDetail(jobCard, 'masterBoxColour'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                  ],
+                _twoColumnRow(
+                  leftLabel: 'Master Box Type',
+                  leftValue: _v(itemMasterData?.masterBoxType ?? ''),
+                  rightLabel: 'Master Box Color',
+                  rightValue: _v(itemMasterData?.masterBoxColour ?? ''),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'MASTER BOX LABEL',
-                        value: _getItemDetail(jobCard, 'masterBoxLabel'),
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'EXTRA PRINTED REEL(KG)',
-                        value: jobCard.extraPrintedReel,
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                  ],
+                _singleRow(
+                  label: 'Master Box Label',
+                  value: _v(itemMasterData?.masterBoxLabel ?? ''),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'EXTRA INNER BOX',
-                        value: jobCard.extraInnerBox,
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'EXTRA OUTER BOX',
-                        value: jobCard.extraOuterBox,
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                  ],
+                pw.SizedBox(height: 8),
+
+                /// ---------- EXTRA DETAILS ----------
+                _sectionTitle('EXTRA DETAILS'),
+
+                _twoColumnRow(
+                  leftLabel: 'Extra Printed Reel (KG)',
+                  leftValue: _v(jobCard.extraPrintedReel),
+                  rightLabel: 'Extra Inner Box',
+                  rightValue: _v(jobCard.extraInnerBox),
+                  border: border,
                 ),
 
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'EXTRA TAPE NOS.',
-                        value: jobCard.extraTapeNos,
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                    pw.Expanded(
-                      child: _buildCell(
-                        label: 'EXTRA OUTER',
-                        value: jobCard.extraOuter,
-                        borderColor: borderColor,
-                        textColor: textColor,
-                      ),
-                    ),
-                  ],
+                _twoColumnRow(
+                  leftLabel: 'Extra Outer Box',
+                  leftValue: _v(jobCard.extraOuterBox),
+                  rightLabel: 'Extra Tape Nos',
+                  rightValue: _v(jobCard.extraTapeNos),
+                  border: border,
                 ),
 
-                _buildRow(
-                  label: '10 NOS. PACKING',
-                  value: jobCard.nos10Packing,
-                  borderColor: borderColor,
-                  textColor: textColor,
+                _singleRow(
+                  label: 'Extra Outer',
+                  value: _v(jobCard.extraOuter),
+                  border: border,
                 ),
 
-                _buildRow(
-                  label: 'NOTE',
-                  value: jobCard.remark,
-                  borderColor: borderColor,
-                  textColor: textColor,
-                  isCenter: true,
-                ),
+                pw.SizedBox(height: 8),
 
-                _buildRow(
-                  label: 'JOBCARD CHECKED BY - 1 )',
-                  value: jobCard.checked1,
-                  borderColor: borderColor,
-                  textColor: textColor,
-                ),
+                /// ---------- PACKING DETAILS ----------
+                _sectionTitle('PACKING DETAILS'),
 
-                _buildRow(
-                  label: 'JOBCARD CHECKED BY - 2 )',
-                  value: jobCard.checked2,
-                  borderColor: borderColor,
-                  textColor: textColor,
+                _singleRow(
+                  label: 'Nos 10 Packing',
+                  value: _v(jobCard.nos10Packing),
+                  border: border,
+                ),
+                pw.SizedBox(height: 8),
+
+                /// ---------- CHECKED DETAILS ----------
+                _sectionTitle('CHECKED DETAILS'),
+
+                _twoColumnRow(
+                  leftLabel: 'Checked By - 1',
+                  leftValue: _v(jobCard.checked1),
+                  rightLabel: 'Checked By - 2',
+                  rightValue: _v(jobCard.checked2),
+                  border: border,
+                ),
+                pw.SizedBox(height: 8),
+
+                /// ---------- NOTE ----------
+                _sectionTitle('NOTE'),
+
+                _singleRow(
+                  label: 'Remark',
+                  value: _v(jobCard.remark),
+                  border: border,
                 ),
               ],
             );
@@ -343,135 +231,89 @@ class JobCardPdfScreen {
       await _savePdf(pdf, jobCard.invno);
     } catch (e) {
       print(e.toString());
-      showErrorSnackbar('Error', 'Failed to generate PDF: $e');
+      showErrorSnackbar('Error', 'PDF generation failed: ${e.toString()}');
     }
   }
 
-  static pw.Widget _buildRow({
+  // ---------- UI HELPERS ----------
+
+  static pw.Widget _sectionTitle(String title) {
+    return pw.Container(
+      width: double.infinity,
+      padding: const pw.EdgeInsets.all(6),
+      color: PdfColors.grey300,
+      child: pw.Text(
+        title,
+        style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold),
+      ),
+    );
+  }
+
+  static pw.Widget _singleRow({
     required String label,
     required String value,
-    required PdfColor borderColor,
-    required PdfColor textColor,
-    bool isBold = false,
-    bool isCenter = false,
-    int colspan = 1,
+    required pw.Border border,
   }) {
     return pw.Container(
-      decoration: pw.BoxDecoration(
-        border: pw.Border.all(color: borderColor, width: 0.5),
-      ),
+      decoration: pw.BoxDecoration(border: border),
+      child: pw.Row(children: [_cell(label, isBold: true), _cell(value)]),
+    );
+  }
+
+  static pw.Widget _twoColumnRow({
+    required String leftLabel,
+    required String leftValue,
+    required String rightLabel,
+    required String rightValue,
+    required pw.Border border,
+  }) {
+    return pw.Container(
+      decoration: pw.BoxDecoration(border: border),
       child: pw.Row(
         children: [
-          pw.Expanded(
-            child: pw.Container(
-              padding: const pw.EdgeInsets.all(6),
-              child: pw.Text(
-                label,
-                style: pw.TextStyle(
-                  fontSize: 10,
-                  fontWeight: pw.FontWeight.bold,
-                  color: textColor,
-                ),
-              ),
-            ),
-          ),
-          pw.Expanded(
-            flex: colspan,
-            child: pw.Container(
-              padding: const pw.EdgeInsets.all(6),
-              decoration: pw.BoxDecoration(
-                border: pw.Border(
-                  left: pw.BorderSide(color: borderColor, width: 0.5),
-                ),
-              ),
-              child: pw.Text(
-                value,
-                style: pw.TextStyle(
-                  fontSize: 10,
-                  fontWeight: isBold
-                      ? pw.FontWeight.bold
-                      : pw.FontWeight.normal,
-                  color: textColor,
-                ),
-                textAlign: isCenter ? pw.TextAlign.center : pw.TextAlign.left,
-              ),
-            ),
-          ),
+          _cell(leftLabel, isBold: true),
+          _cell(leftValue),
+          _cell(rightLabel, isBold: true),
+          _cell(rightValue),
         ],
       ),
     );
   }
 
-  static pw.Widget _buildCell({
-    required String label,
-    required String value,
-    required PdfColor borderColor,
-    required PdfColor textColor,
-    bool isCenter = false,
-  }) {
-    return pw.Container(
-      decoration: pw.BoxDecoration(
-        border: pw.Border.all(color: borderColor, width: 0.5),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Container(
-            padding: const pw.EdgeInsets.all(6),
-            child: pw.Text(
-              label,
-              style: pw.TextStyle(
-                fontSize: 10,
-                fontWeight: pw.FontWeight.bold,
-                color: textColor,
-              ),
-            ),
+  static pw.Widget _cell(String text, {bool isBold = false}) {
+    return pw.Expanded(
+      child: pw.Container(
+        padding: const pw.EdgeInsets.all(6),
+        child: pw.Text(
+          _v(text),
+          style: pw.TextStyle(
+            fontSize: 10,
+            fontWeight: isBold ? pw.FontWeight.bold : pw.FontWeight.normal,
           ),
-          pw.Container(
-            width: double.infinity,
-            padding: const pw.EdgeInsets.all(6),
-            decoration: pw.BoxDecoration(
-              border: pw.Border(
-                top: pw.BorderSide(color: borderColor, width: 0.5),
-              ),
-            ),
-            child: pw.Text(
-              value,
-              style: pw.TextStyle(fontSize: 10, color: textColor),
-              textAlign: isCenter ? pw.TextAlign.center : pw.TextAlign.left,
-            ),
-          ),
-        ],
+        ),
       ),
     );
+  }
+
+  // ---------- UTILS ----------
+
+  /// returns '-' if value is null or empty
+  static String _v(String? value) {
+    if (value == null || value.trim().isEmpty) return '-';
+    return value;
   }
 
   static String _formatDate(String date) {
-    if (date.isEmpty) return '';
-    try {
-      final parts = date.split('-');
-      if (parts.length == 3) {
-        return '${parts[2]}-${parts[1]}-${parts[0]}';
-      }
-      return date;
-    } catch (e) {
-      return date;
-    }
-  }
-
-  static String _getItemDetail(JobCardDm jobCard, String field) {
-    return '';
+    if (date.isEmpty) return '-';
+    final parts = date.split('-');
+    return parts.length == 3 ? '${parts[2]}-${parts[1]}-${parts[0]}' : date;
   }
 
   static Future<void> _savePdf(pw.Document pdf, String invno) async {
     final bytes = await pdf.save();
     final dir = await getTemporaryDirectory();
-
-    // Sanitize the invno by replacing invalid characters
-    final sanitizedInvno = invno.replaceAll('/', '_').replaceAll('\\', '_');
-
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final file = File('${dir.path}/Job_Card_${sanitizedInvno}_$timestamp.pdf');
+    final safeInv = invno.replaceAll('/', '_');
+    final file = File('${dir.path}/JobCard_$safeInv.pdf');
     await file.writeAsBytes(bytes);
     await OpenFilex.open(file.path);
   }

@@ -6,7 +6,7 @@ import 'package:sanghvi_job_card/constants/color_constants.dart';
 import 'package:sanghvi_job_card/features/home/controllers/home_controller.dart';
 import 'package:sanghvi_job_card/features/home/widgets/job_card_card.dart';
 import 'package:sanghvi_job_card/features/home/widgets/sidebar_menu_item.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/screens/job_card_screen.dart';
+import 'package:sanghvi_job_card/features/home/screens/job_card_screen.dart';
 import 'package:sanghvi_job_card/styles/font_sizes.dart';
 import 'package:sanghvi_job_card/styles/text_styles.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_paddings.dart';

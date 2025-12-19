@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:sanghvi_job_card/constants/color_constants.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/models/job_card_dm.dart';
+import 'package:sanghvi_job_card/features/home/models/job_card_dm.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_paddings.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_screen_utils.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_spacings.dart';
@@ -112,56 +112,16 @@ class JobCardCard extends StatelessWidget {
                               size: isTablet ? 18 : 16,
                               color: kColorPrimary,
                             ),
-                            AppSpaces.h6,
-                            Text(
-                              "Edit",
-                              style: TextStyle(
-                                fontSize: isTablet ? 15 : 14,
-                                fontWeight: FontWeight.w600,
-                                color: kColorPrimary,
-                              ),
-                            ),
                           ],
                         ),
                       ),
                     ),
-                    AppSpaces.h10,
-                    InkWell(
-                      onTap: onPrint, // Add this parameter
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: AppPaddings.combined(
-                          horizontal: isTablet ? 12 : 10,
-                          vertical: isTablet ? 8 : 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.print_outlined,
-                              size: isTablet ? 18 : 16,
-                              color: Colors.green,
-                            ),
-                            AppSpaces.h6,
-                            Text(
-                              "Print",
-                              style: TextStyle(
-                                fontSize: isTablet ? 15 : 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+
                     AppSpaces.h10,
                     InkWell(
                       onTap: onDelete,
                       borderRadius: BorderRadius.circular(8),
+
                       child: Container(
                         padding: AppPaddings.combined(
                           horizontal: isTablet ? 12 : 10,
@@ -178,14 +138,30 @@ class JobCardCard extends StatelessWidget {
                               size: isTablet ? 18 : 16,
                               color: kColorRed,
                             ),
-                            AppSpaces.h6,
-                            Text(
-                              "Delete",
-                              style: TextStyle(
-                                fontSize: isTablet ? 15 : 14,
-                                fontWeight: FontWeight.w600,
-                                color: kColorRed,
-                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    AppSpaces.h10,
+                    InkWell(
+                      onTap: onPrint,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: AppPaddings.combined(
+                          horizontal: isTablet ? 12 : 10,
+                          vertical: isTablet ? 8 : 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.print_outlined,
+                              size: isTablet ? 18 : 16,
+                              color: Colors.green,
                             ),
                           ],
                         ),

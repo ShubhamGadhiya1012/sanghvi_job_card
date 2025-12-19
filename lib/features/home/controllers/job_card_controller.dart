@@ -8,9 +8,9 @@ import 'package:intl/intl.dart';
 import 'package:sanghvi_job_card/features/brand_master/models/item_master_dm.dart';
 import 'package:sanghvi_job_card/features/brand_master/repos/item_master_entry_repo.dart';
 import 'package:sanghvi_job_card/features/home/controllers/home_controller.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/models/checked_dm.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/models/job_card_dm.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/repos/job_card_repo.dart';
+import 'package:sanghvi_job_card/features/home/models/checked_dm.dart';
+import 'package:sanghvi_job_card/features/home/models/job_card_dm.dart';
+import 'package:sanghvi_job_card/features/home/repos/job_card_repo.dart';
 import 'package:sanghvi_job_card/features/party_master/models/party_master_dm.dart';
 import 'package:sanghvi_job_card/utils/dialogs/app_dialogs.dart';
 import 'package:sanghvi_job_card/utils/helpers/date_format_helper.dart';
@@ -291,7 +291,7 @@ class JobCardController extends GetxController {
 
   Future<void> openAttachment(String fileUrl) async {
     String url =
-        'http://192.168.0.145:8080/JobCard/${fileUrl.replaceAll('\\', '/')}';
+        'http://169.254.1.2:8081/JobCard/${fileUrl.replaceAll('\\', '/')}';
 
     try {
       final Uri uri = Uri.parse(url);
@@ -362,7 +362,6 @@ class JobCardController extends GetxController {
       isLoading.value = false;
     }
   }
-
 
   void clearAll() {
     currentInvno.value = '';
