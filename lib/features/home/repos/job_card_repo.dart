@@ -1,6 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:sanghvi_job_card/features/job_card_entry/models/checked_dm.dart';
+import 'package:sanghvi_job_card/features/home/models/checked_dm.dart';
 import 'package:sanghvi_job_card/features/party_master/models/party_master_dm.dart';
 import 'package:sanghvi_job_card/services/api_service.dart';
 import 'package:sanghvi_job_card/utils/helpers/secure_storage_helper.dart';
@@ -74,12 +74,18 @@ class JobCardRepo {
         'Nos10Packing': nos10Packing,
       };
 
-      final List<http.MultipartFile> multipartFiles = [];
-
-      for (var i = 0; i < existingAttachments.length; i++) {
-        fields['ExistingAttachments[$i]'] = existingAttachments[i];
+      // **CHANGE: Add ExistingAttachments as comma-separated string**
+      if (existingAttachments.isNotEmpty) {
+        fields['ExistingAttachments'] = existingAttachments.join(',');
       }
 
+      final List<http.MultipartFile> multipartFiles = [];
+
+      print('================ JOB CARD API PAYLOAD ================');
+
+      // **REMOVED: Old code that sent existing attachments as multipart files**
+
+      // ===== NEW FILE ATTACHMENTS =====
       for (var file in newFiles) {
         if (file.path != null) {
           multipartFiles.add(
@@ -89,6 +95,7 @@ class JobCardRepo {
               filename: file.name,
             ),
           );
+          print('Attachments (new file): ${file.name}');
         } else if (file.bytes != null) {
           multipartFiles.add(
             http.MultipartFile.fromBytes(
@@ -97,23 +104,18 @@ class JobCardRepo {
               filename: file.name,
             ),
           );
+          print('Attachments (new file): ${file.name}');
         }
       }
-
-      print('================ JOB CARD API PAYLOAD ================');
 
       fields.forEach((key, value) {
-        if (value.toString().isNotEmpty) {
-          print('$key : $value');
+        if (value.isNotEmpty) {
+          print('$key: $value');
         }
       });
-
-      for (var file in multipartFiles) {
-        print('${file.field} : ${file.filename}');
-      }
-
+      print('Total new file attachments: ${multipartFiles.length}');
       print('======================================================');
- 
+
       final response = await ApiService.postFormData(
         endpoint: '/JobCard/addUpdateJobCard',
         fields: fields,

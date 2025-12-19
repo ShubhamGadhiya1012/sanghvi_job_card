@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sanghvi_job_card/constants/color_constants.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/controllers/job_card_controller.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/models/checked_dm.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/models/job_card_dm.dart';
+import 'package:sanghvi_job_card/features/home/controllers/job_card_controller.dart';
+import 'package:sanghvi_job_card/features/home/models/checked_dm.dart';
+import 'package:sanghvi_job_card/features/home/models/job_card_dm.dart';
 import 'package:sanghvi_job_card/styles/font_sizes.dart';
 import 'package:sanghvi_job_card/styles/text_styles.dart';
 import 'package:sanghvi_job_card/utils/screen_utils/app_paddings.dart';
@@ -82,22 +82,31 @@ class JobCardScreen extends StatelessWidget {
                               ),
                             ),
                             tablet ? AppSpaces.v16 : AppSpaces.v10,
-                            AppTextFormField(
-                              controller: _controller.poNoController,
-                              hintText: 'PO No',
-                              validator: (value) =>
-                                  value == null || value.trim().isEmpty
-                                  ? 'Please enter PO no'
-                                  : null,
-                            ),
-                            tablet ? AppSpaces.v16 : AppSpaces.v10,
-                            AppDatePickerTextFormField(
-                              dateController: _controller.poDateController,
-                              hintText: 'PO Date',
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                  ? 'Please select PO date'
-                                  : null,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller: _controller.poNoController,
+                                    hintText: 'PO No',
+                                    validator: (value) =>
+                                        value == null || value.trim().isEmpty
+                                        ? 'Please enter PO no'
+                                        : null,
+                                  ),
+                                ),
+                                tablet ? AppSpaces.h16 : AppSpaces.h10,
+                                Expanded(
+                                  child: AppDatePickerTextFormField(
+                                    dateController:
+                                        _controller.poDateController,
+                                    hintText: 'PO Date',
+                                    validator: (value) =>
+                                        value == null || value.isEmpty
+                                        ? 'Please select PO date'
+                                        : null,
+                                  ),
+                                ),
+                              ],
                             ),
                             tablet ? AppSpaces.v16 : AppSpaces.v10,
                             Obx(
@@ -109,6 +118,91 @@ class JobCardScreen extends StatelessWidget {
                                 onChanged: _controller.onItemSelected,
                                 validatorText: 'Please select an item',
                               ),
+                            ),
+                            tablet ? AppSpaces.v16 : AppSpaces.v10,
+                            AppTextFormField(
+                              controller: _controller.tapeDimensionController,
+                              hintText: 'Tape Dimension',
+                              enabled: false,
+                              fillColor: kColorLightGrey,
+                            ),
+                            tablet ? AppSpaces.v16 : AppSpaces.v10,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.weightPer10NosController,
+                                    hintText: 'Weight Per 10 Nos',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                                tablet ? AppSpaces.h16 : AppSpaces.h10,
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.reelColourController,
+                                    hintText: 'Reel Colour',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            tablet ? AppSpaces.v16 : AppSpaces.v10,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller: _controller.reelTypeController,
+                                    hintText: 'Reel Type',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                                tablet ? AppSpaces.h16 : AppSpaces.h10,
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.outerColourController,
+                                    hintText: 'Outer Colour',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            tablet ? AppSpaces.v16 : AppSpaces.v10,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller: _controller.mrpController,
+                                    hintText: 'MRP on Reel',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                                tablet ? AppSpaces.h16 : AppSpaces.h10,
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.reelPrintColourController,
+                                    hintText: 'Reel Print Colour',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            tablet ? AppSpaces.v16 : AppSpaces.v10,
+                            AppTextFormField(
+                              controller:
+                                  _controller.outerPrintColourController,
+                              hintText: 'Outer Print Colour',
+                              enabled: false,
+                              fillColor: kColorLightGrey,
                             ),
                             tablet ? AppSpaces.v16 : AppSpaces.v10,
                             Row(
@@ -144,6 +238,85 @@ class JobCardScreen extends StatelessWidget {
                                   ),
                                 ),
                               ],
+                            ),
+                            tablet ? AppSpaces.v16 : AppSpaces.v10,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.packing10NosController,
+                                    hintText: '10 Nos. Packing',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                                tablet ? AppSpaces.h16 : AppSpaces.h10,
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.innerBoxLabelController,
+                                    hintText: 'Inner Box Label',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            tablet ? AppSpaces.v16 : AppSpaces.v10,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.innerBoxQtyController,
+                                    hintText: 'Inner Box Qty',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                                tablet ? AppSpaces.h16 : AppSpaces.h10,
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.innerBoxColourController,
+                                    hintText: 'Inner Box Colour',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            tablet ? AppSpaces.v16 : AppSpaces.v10,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.masterBoxTypeController,
+                                    hintText: 'Master Box Type',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                                tablet ? AppSpaces.h16 : AppSpaces.h10,
+                                Expanded(
+                                  child: AppTextFormField(
+                                    controller:
+                                        _controller.masterBoxColourController,
+                                    hintText: 'Master Box Colour',
+                                    enabled: false,
+                                    fillColor: kColorLightGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            tablet ? AppSpaces.v16 : AppSpaces.v10,
+                            AppTextFormField(
+                              controller: _controller.masterBoxLabelController,
+                              hintText: 'Master Box Label',
+                              enabled: false,
+                              fillColor: kColorLightGrey,
                             ),
                             tablet ? AppSpaces.v16 : AppSpaces.v10,
                             Row(

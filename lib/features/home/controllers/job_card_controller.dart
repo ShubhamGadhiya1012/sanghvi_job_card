@@ -8,9 +8,9 @@ import 'package:intl/intl.dart';
 import 'package:sanghvi_job_card/features/brand_master/models/item_master_dm.dart';
 import 'package:sanghvi_job_card/features/brand_master/repos/item_master_entry_repo.dart';
 import 'package:sanghvi_job_card/features/home/controllers/home_controller.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/models/checked_dm.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/models/job_card_dm.dart';
-import 'package:sanghvi_job_card/features/job_card_entry/repos/job_card_repo.dart';
+import 'package:sanghvi_job_card/features/home/models/checked_dm.dart';
+import 'package:sanghvi_job_card/features/home/models/job_card_dm.dart';
+import 'package:sanghvi_job_card/features/home/repos/job_card_repo.dart';
 import 'package:sanghvi_job_card/features/party_master/models/party_master_dm.dart';
 import 'package:sanghvi_job_card/utils/dialogs/app_dialogs.dart';
 import 'package:sanghvi_job_card/utils/helpers/date_format_helper.dart';
@@ -33,6 +33,23 @@ class JobCardController extends GetxController {
   var remarkController = TextEditingController();
   var extraPrintedReelController = TextEditingController();
   var nos10PackingController = TextEditingController();
+
+  // Auto-filled fields from Item Master (read-only)
+  var tapeDimensionController = TextEditingController();
+  var weightPer10NosController = TextEditingController();
+  var reelColourController = TextEditingController();
+  var reelTypeController = TextEditingController();
+  var outerColourController = TextEditingController();
+  var mrpController = TextEditingController();
+  var reelPrintColourController = TextEditingController();
+  var outerPrintColourController = TextEditingController();
+  var packing10NosController = TextEditingController();
+  var innerBoxLabelController = TextEditingController();
+  var innerBoxQtyController = TextEditingController();
+  var innerBoxColourController = TextEditingController();
+  var masterBoxTypeController = TextEditingController();
+  var masterBoxColourController = TextEditingController();
+  var masterBoxLabelController = TextEditingController();
 
   var partyList = <PartyMasterDm>[].obs;
   var partyNames = <String>[].obs;
@@ -100,6 +117,23 @@ class JobCardController extends GetxController {
         orElse: () => itemList.first,
       );
       selectedItem.value = selected;
+
+      // Auto-fill item master fields
+      tapeDimensionController.text = selected.description;
+      weightPer10NosController.text = selected.weightPer10Nos;
+      reelColourController.text = selected.reelColour;
+      reelTypeController.text = selected.reelType;
+      outerColourController.text = selected.outerColour;
+      mrpController.text = selected.mrp;
+      reelPrintColourController.text = selected.reelPrintColour;
+      outerPrintColourController.text = selected.outerPrintColour;
+      packing10NosController.text = selected.nos10Packing;
+      innerBoxLabelController.text = selected.innerBoxLabel;
+      innerBoxQtyController.text = selected.innerBoxQty;
+      innerBoxColourController.text = selected.innerBoxColour;
+      masterBoxTypeController.text = selected.masterBoxType;
+      masterBoxColourController.text = selected.masterBoxColour;
+      masterBoxLabelController.text = selected.masterBoxLabel;
     }
   }
 
@@ -159,6 +193,23 @@ class JobCardController extends GetxController {
           orElse: () => throw Exception('Item not found'),
         );
         selectedItem.value = item;
+
+        // ADD THIS: Auto-fill item master fields when editing
+        tapeDimensionController.text = item.description;
+        weightPer10NosController.text = item.weightPer10Nos;
+        reelColourController.text = item.reelColour;
+        reelTypeController.text = item.reelType;
+        outerColourController.text = item.outerColour;
+        mrpController.text = item.mrp;
+        reelPrintColourController.text = item.reelPrintColour;
+        outerPrintColourController.text = item.outerPrintColour;
+        packing10NosController.text = item.nos10Packing;
+        innerBoxLabelController.text = item.innerBoxLabel;
+        innerBoxQtyController.text = item.innerBoxQty;
+        innerBoxColourController.text = item.innerBoxColour;
+        masterBoxTypeController.text = item.masterBoxType;
+        masterBoxColourController.text = item.masterBoxColour;
+        masterBoxLabelController.text = item.masterBoxLabel;
       } catch (e) {
         selectedItem.value = null;
       }
@@ -240,7 +291,7 @@ class JobCardController extends GetxController {
 
   Future<void> openAttachment(String fileUrl) async {
     String url =
-        'http://192.168.0.145:8080/JobCard/${fileUrl.replaceAll('\\', '/')}';
+        'http://169.254.1.2:8081/JobCard/${fileUrl.replaceAll('\\', '/')}';
 
     try {
       final Uri uri = Uri.parse(url);
@@ -334,6 +385,22 @@ class JobCardController extends GetxController {
 
     attachmentFiles.clear();
     existingAttachmentUrls.clear();
+
+    tapeDimensionController.clear();
+    weightPer10NosController.clear();
+    reelColourController.clear();
+    reelTypeController.clear();
+    outerColourController.clear();
+    mrpController.clear();
+    reelPrintColourController.clear();
+    outerPrintColourController.clear();
+    packing10NosController.clear();
+    innerBoxLabelController.clear();
+    innerBoxQtyController.clear();
+    innerBoxColourController.clear();
+    masterBoxTypeController.clear();
+    masterBoxColourController.clear();
+    masterBoxLabelController.clear();
 
     isEditMode.value = false;
   }
