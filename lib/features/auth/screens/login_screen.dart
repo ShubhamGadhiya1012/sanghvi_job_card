@@ -757,7 +757,7 @@ class LoginScreen extends StatelessWidget {
 
     if (selectedOption != null) {
       if (selectedOption == 'live') {
-        ApiService.kBaseUrl = 'http://169.254.1.2:8081/api';
+        ApiService.kBaseUrl = 'http://192.168.1.251:8081/api';
         Get.snackbar(
           'Mode Selected',
           'Live mode activated',

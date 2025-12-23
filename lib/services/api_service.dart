@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static String kBaseUrl = 'http://169.254.1.2:8081/api';
+  static String kBaseUrl = 'http://192.168.1.251:8081/api';
 
   // static String kBaseUrl = 'http://192.168.0.145:5015/api'; // JInee
 
