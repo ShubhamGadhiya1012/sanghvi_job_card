@@ -291,7 +291,7 @@ class JobCardController extends GetxController {
 
   Future<void> openAttachment(String fileUrl) async {
     String url =
-        'http://169.254.1.2:8081/JobCard/${fileUrl.replaceAll('\\', '/')}';
+        'http://192.168.1.251:8081/JobCard/${fileUrl.replaceAll('\\', '/')}';
 
     try {
       final Uri uri = Uri.parse(url);

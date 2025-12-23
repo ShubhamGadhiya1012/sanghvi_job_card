@@ -385,7 +385,7 @@ class HomeController extends GetxController {
         itemMasterData: itemMasterData,
       );
     } catch (e) {
-      print(e.toString());
+    //  print(e.toString());
       showErrorSnackbar('Error', 'Failed to generate PDF: ${e.toString()}');
     } finally {
       isLoading.value = false;

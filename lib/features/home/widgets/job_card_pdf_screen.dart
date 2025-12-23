@@ -230,7 +230,7 @@ class JobCardPdfScreen {
 
       await _savePdf(pdf, jobCard.invno);
     } catch (e) {
-      print(e.toString());
+      //  print(e.toString());
       showErrorSnackbar('Error', 'PDF generation failed: ${e.toString()}');
     }
   }
